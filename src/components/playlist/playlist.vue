@@ -11,7 +11,7 @@
                         </span>
                     </h1>
                 </div>
-                <Scroll class="list-content" :data="sequenceList" ref="listContent">
+                <Scroll class="list-content" :data="sequenceList" ref="listContent" :refreshDelay="refreshDelay">
                     <transition-group name="list" tag="ul">
                         <li class="item" v-for="(item, index) in sequenceList" :key="item.id" @click="seletItem(item, index)" ref="listTtem">
                             <i class="current" :class="getCurrentIcon(item)"></i>
@@ -25,7 +25,7 @@
                         </li>
                     </transition-group>
                 </Scroll>
-                <div class="list-operate">
+                <div class="list-operate" @click="addSong">
                     <div class="add">
                         <i class="icon-add"></i>
                         <span class="text">添加歌曲到列表</span>
@@ -36,6 +36,7 @@
                 </div>
             </div>
             <Confirm ref="confirm" text="是否清空播放列表" confirmBtnText="清空" @confirm="confirmClear"></Confirm>
+            <add-song ref="addSong"></add-song>
         </div>
     </transition>
 </template>
@@ -44,14 +45,15 @@
 import { playMode } from 'common/js/config'
 import Scroll from 'base/scroll/scroll'
 import Confirm from 'base/confirm/confirm'
-// import AddSong from 'components/add-song/add-song'
+import AddSong from 'components/add-song/add-song'
 import { playerMixin } from 'common/js/mixin'
 import { mapActions } from 'vuex'
 export default {
     mixins: [playerMixin],
     data() {
         return {
-            showFlag: false
+            showFlag: false,
+            refreshDelay: 150 // 需保证比transiton-group的动画时间(100)之后refresh
         }
     },
     computed: {
@@ -105,6 +107,9 @@ export default {
             this.deleteSongList()
             this.hide()
         },
+        addSong() {
+            this.$refs.addSong.show()
+        },
         ...mapActions([
             'deleteSong', 'deleteSongList'
         ])
@@ -119,7 +124,8 @@ export default {
     },
     components: {
         Scroll,
-        Confirm
+        Confirm,
+        AddSong
     }
 }
 </script>
