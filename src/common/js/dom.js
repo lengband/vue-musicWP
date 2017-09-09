@@ -1,4 +1,5 @@
 export function hasClass(el, className) {
+    // class="className1 className2 " 都能匹配到
     let reg = new RegExp('(^|\\s)' + className + '(\\s|$)')
     return reg.test(el.className)
 }
